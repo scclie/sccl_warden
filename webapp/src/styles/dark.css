@@ -235,7 +235,7 @@
 
 :root[data-theme='dark'] .card-brand-american-express {
   color: #fff;
-  background: #2563eb;
+  background: var(--primary, #5e81ac);
 }
 
 :root[data-theme='dark'] .card-brand-mastercard,

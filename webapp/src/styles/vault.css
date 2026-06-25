@@ -47,7 +47,7 @@
 }
 
 .folder-add-btn:hover {
-  color: #1d4ed8;
+  color: var(--primary, #5e81ac);
 }
 
 .search-input {
@@ -140,14 +140,14 @@
 }
 
 .folder-delete-btn:hover {
-  color: #b91c1c;
-  background: #fee2e2;
+  color: var(--danger, #bf616a);
+  background: color-mix(in srgb, var(--danger, #bf616a) 15%, var(--panel, #ffffff));
   transform: scale(1.06);
 }
 
 .folder-edit-btn:hover {
-  color: #1d4ed8;
-  background: #dbeafe;
+  color: var(--primary, #5e81ac);
+  background: color-mix(in srgb, var(--primary, #5e81ac) 15%, var(--panel, #ffffff));
 }
 
 .folder-sort-btn {
@@ -161,14 +161,14 @@
 }
 
 .folder-sort-btn:hover {
-  color: #1d4ed8;
-  background: #dbeafe;
+  color: var(--primary, #5e81ac);
+  background: color-mix(in srgb, var(--primary, #5e81ac) 15%, var(--panel, #ffffff));
   transform: scale(1.06);
 }
 
 .folder-sort-btn.active {
-  color: #175ddc;
-  background: #e9f1ff;
+  color: var(--primary-strong, #3b5a7a);
+  background: color-mix(in srgb, var(--primary, #5e81ac) 22%, var(--panel, #ffffff));
 }
 
 .list-col {
@@ -641,7 +641,7 @@ select.input.duplicate-mode-toolbar-select {
 }
 
 .card-brand-maestro {
-  color: #1e40af;
+  color: var(--primary-strong, #3b5a7a);
   background:
     radial-gradient(circle at 38% 50%, rgba(0, 85, 164, 0.86) 0 24%, transparent 25%),
     radial-gradient(circle at 62% 50%, rgba(237, 28, 36, 0.82) 0 24%, transparent 25%),
@@ -958,11 +958,11 @@ select.input.duplicate-mode-toolbar-select {
 }
 
 .totp-ring-track {
-  stroke: #d9e2ef;
+  stroke: color-mix(in srgb, var(--primary, #5e81ac) 30%, var(--line, rgba(76, 86, 106, 0.20)));
 }
 
 .totp-ring-progress {
-  stroke: #2563eb;
+  stroke: var(--primary, #5e81ac);
   stroke-linecap: round;
   transition: stroke-dashoffset 260ms linear, stroke 200ms ease;
 }

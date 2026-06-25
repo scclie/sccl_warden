@@ -15,34 +15,36 @@
 }
 
 .topbar {
-  @apply flex h-[58px] items-center justify-between border-b px-[18px] text-slate-900 transition;
+  @apply flex h-[58px] items-center justify-between border-b px-[18px] transition;
   border-color: var(--line-soft);
-  background: rgba(244, 248, 255, 0.78);
+  background: color-mix(in srgb, var(--panel, #ffffff) 82%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
 .brand {
-  @apply inline-flex items-center gap-2 text-[34px] font-extrabold text-ink;
+  @apply inline-flex items-center gap-2 text-[34px] font-extrabold;
+  color: var(--text);
 }
 
 .brand-wordmark {
   @apply block max-w-full;
-  width: clamp(168px, 17vw, 224px);
-  aspect-ratio: 862 / 102;
-  background: #116ff9;
-  mask: url('/nodewarden-wordmark.svg') center / contain no-repeat;
-  -webkit-mask: url('/nodewarden-wordmark.svg') center / contain no-repeat;
+  font-size: clamp(20px, 3.2vw, 34px);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--brand);
+  letter-spacing: -0.02em;
 }
 
 .mobile-page-title {
-  @apply hidden min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[19px] font-extrabold leading-tight text-slate-900;
+  @apply hidden min-w-0 overflow-hidden text-ellipsis whitespace-nowrap text-[19px] font-extrabold leading-tight;
+  color: var(--text);
   max-width: min(58vw, 240px);
 }
 
 .brand-logo {
   @apply h-[42px] w-[53px] object-contain;
-  filter: drop-shadow(0 10px 22px rgba(43, 102, 217, 0.22));
+  filter: drop-shadow(0 10px 22px rgba(94, 129, 172, 0.22));
 }
 
 .topbar-actions {
@@ -104,8 +106,8 @@
 
 .theme-switch-slider {
   @apply absolute inset-0 cursor-pointer rounded-full border transition;
-  background: #dbeafe;
-  border-color: #9dbbec;
+  background: color-mix(in srgb, var(--accent, #8fbcbb) 30%, var(--bg-accent, #eceff4));
+  border-color: color-mix(in srgb, var(--accent, #8fbcbb) 50%, transparent);
 }
 
 .theme-switch-slider::before {
@@ -114,8 +116,8 @@
   left: 2px;
   bottom: 2px;
   z-index: 2;
-  background: linear-gradient(180deg, #ffffff, #edf4ff);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.14);
+  background: linear-gradient(180deg, var(--panel, #ffffff), color-mix(in srgb, var(--panel, #ffffff) 90%, var(--primary, #5e81ac)));
+  box-shadow: 0 2px 8px rgba(46, 52, 64, 0.14);
   transition:
     transform var(--dur-medium) var(--ease-out-strong),
     box-shadow var(--dur-fast) var(--ease-out-soft),
@@ -132,7 +134,7 @@
 }
 
 .theme-switch .moon svg {
-  fill: #5b86d6;
+  fill: var(--primary, #5e81ac);
   @apply absolute h-4 w-4;
   top: 7px;
   left: 7px;
@@ -142,12 +144,12 @@
 }
 
 .theme-switch-input:checked + .theme-switch-slider {
-  background: linear-gradient(180deg, #173150, #122742);
-  border-color: #35527a;
+  background: linear-gradient(180deg, var(--panel, #3b4252), var(--panel-soft, #343a4a));
+  border-color: var(--primary, #5e81ac);
 }
 
 .theme-switch-input:focus + .theme-switch-slider {
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.22);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary, #5e81ac) 22%, transparent);
 }
 
 .theme-switch-input:checked + .theme-switch-slider::before {
@@ -173,10 +175,11 @@
 }
 
 .user-chip {
-  @apply inline-flex h-[34px] items-center gap-1.5 rounded-full border px-3 text-sm font-semibold text-muted-strong transition;
-  background: rgba(249, 251, 255, 0.94);
-  border-color: rgba(148, 163, 184, 0.30);
-  box-shadow: 0 8px 16px rgba(13, 31, 68, 0.04);
+  @apply inline-flex h-[34px] items-center gap-1.5 rounded-full border px-3 text-sm font-semibold transition;
+  color: var(--muted-strong);
+  background: color-mix(in srgb, var(--panel, #ffffff) 94%, transparent);
+  border-color: color-mix(in srgb, var(--muted, #4c566a) 25%, transparent);
+  box-shadow: 0 8px 16px rgba(46, 52, 64, 0.04);
 }
 
 .user-chip:hover {
@@ -236,21 +239,21 @@
 
 .side-link:hover,
 .side-group-trigger:hover {
-  background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
-  border-color: rgba(128, 152, 192, 0.20);
+  background: color-mix(in srgb, var(--panel, #ffffff) 80%, var(--bg-accent, #eceff4));
+  border-color: color-mix(in srgb, var(--primary, #5e81ac) 20%, transparent);
   color: var(--text);
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: 0 2px 8px rgba(46, 52, 64, 0.06), inset 0 1px 0 color-mix(in srgb, var(--panel, #ffffff) 100%, transparent);
   transform: translateX(2px);
 }
 
 .side-link.active,
 .side-group-trigger.active {
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(37, 99, 235, 0.08) 100%);
-  border-color: rgba(37, 99, 235, 0.32);
+  background: color-mix(in srgb, var(--primary, #5e81ac) 10%, var(--panel, #ffffff));
+  border-color: color-mix(in srgb, var(--primary, #5e81ac) 30%, transparent);
   color: var(--primary-strong);
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    0 2px 8px rgba(37, 99, 235, 0.15);
+    inset 0 1px 0 color-mix(in srgb, var(--panel, #ffffff) 50%, transparent),
+    0 2px 8px color-mix(in srgb, var(--primary, #5e81ac) 15%, transparent);
 }
 
 .side-group-chevron {
@@ -294,13 +297,13 @@
 }
 
 .side-sub-link:hover {
-  background: rgba(255, 255, 255, 0.78);
+  background: color-mix(in srgb, var(--panel, #ffffff) 78%, transparent);
   color: var(--text);
 }
 
 .side-sub-link.active {
-  background: rgba(37, 99, 235, 0.10);
-  border-color: rgba(37, 99, 235, 0.18);
+  background: color-mix(in srgb, var(--primary, #5e81ac) 10%, var(--panel, #ffffff));
+  border-color: color-mix(in srgb, var(--primary, #5e81ac) 18%, var(--line, rgba(76, 86, 106, 0.20)));
   color: var(--primary-strong);
 }
 

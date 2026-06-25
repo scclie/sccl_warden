@@ -98,8 +98,8 @@
 .backup-help-trigger {
   @apply inline-flex h-[22px] w-[22px] shrink-0 cursor-pointer items-center justify-center rounded-full p-0 text-[13px] font-extrabold leading-none;
   border: 1px solid #bfd1f3;
-  background: #eef4ff;
-  color: #1d4ed8;
+  background: color-mix(in srgb, var(--primary, #5e81ac) 15%, var(--panel, #ffffff));
+  color: var(--primary-strong, #3b5a7a);
 }
 
 .backup-help-trigger:hover,
@@ -194,7 +194,7 @@
 }
 
 .backup-recommendation-step a {
-  color: #1d4ed8;
+  color: var(--primary-strong, #3b5a7a);
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -234,7 +234,7 @@
 }
 
 .backup-destination-item:hover {
-  border-color: #93c5fd;
+  border-color: color-mix(in srgb, var(--primary, #5e81ac) 30%, transparent);
   background: #f8fbff;
 }
 
@@ -316,14 +316,14 @@
 }
 
 .backup-interval-preset:hover:not(:disabled) {
-  border-color: #2563eb;
-  color: #2563eb;
+  border-color: var(--primary, #5e81ac);
+  color: var(--primary, #5e81ac);
   background: #eff6ff;
 }
 
 .backup-interval-preset.active {
-  border-color: #2563eb;
-  background: #2563eb;
+  border-color: var(--primary, #5e81ac);
+  background: var(--primary, #5e81ac);
   color: #fff;
 }
 
@@ -606,7 +606,7 @@
 
 .log-mode-option.active {
   background: #ffffff;
-  color: #1d4ed8;
+  color: var(--primary-strong, #3b5a7a);
   box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
 }
 
@@ -723,7 +723,7 @@
 
 .log-row:hover,
 .log-row.active {
-  border-color: #93c5fd;
+  border-color: color-mix(in srgb, var(--primary, #5e81ac) 30%, transparent);
   background: #f8fbff;
   box-shadow: 0 10px 22px rgba(37, 99, 235, 0.08);
 }
@@ -734,7 +734,7 @@
 
 .log-category-auth {
   background: #eff6ff;
-  color: #1d4ed8;
+  color: var(--primary-strong, #3b5a7a);
 }
 
 .log-category-security {
@@ -776,8 +776,8 @@
 }
 
 .log-level-info {
-  background: #eef4ff;
-  color: #1d4ed8;
+  background: color-mix(in srgb, var(--primary, #5e81ac) 15%, var(--panel, #ffffff));
+  color: var(--primary-strong, #3b5a7a);
 }
 
 .log-level-warn {
@@ -1437,7 +1437,7 @@
 }
 
 .restore-progress-item.active {
-  color: #1d4ed8;
+  color: var(--primary-strong, #3b5a7a);
 }
 
 .restore-progress-item.done {
@@ -1450,7 +1450,7 @@
 }
 
 .restore-progress-item.active .restore-progress-dot {
-  background: #1d4ed8;
+  background: var(--primary-hover, #4c6a8f);
 }
 
 .restore-progress-item.done .restore-progress-dot {

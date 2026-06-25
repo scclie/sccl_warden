@@ -41,7 +41,7 @@
 .dialog-warning-badge {
   @apply inline-flex h-12 w-12 items-center justify-center rounded-2xl;
   background: linear-gradient(180deg, #fff1f2, #ffe4e6);
-  color: #dc2626;
+  color: var(--danger, #bf616a);
   box-shadow:
     0 12px 30px rgba(220, 38, 38, 0.18),
     0 0 0 1px rgba(220, 38, 38, 0.08) inset;

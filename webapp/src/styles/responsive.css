@@ -332,7 +332,7 @@
   }
 
   .mobile-sidebar-sheet .tree-btn.active {
-    background: #eef4ff;
+    background: color-mix(in srgb, var(--primary, #5e81ac) 15%, var(--panel, #ffffff));
   }
 
   .mobile-sidebar-sheet .folder-delete-btn {

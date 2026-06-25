@@ -30,7 +30,7 @@ interface AppAuthenticatedShellProps {
 
 type NavLayoutMode = 'flat' | 'grouped-expanded' | 'grouped-smart';
 
-const NAV_LAYOUT_STORAGE_KEY = 'nodewarden.navLayoutMode';
+const NAV_LAYOUT_STORAGE_KEY = 'sccl.navLayoutMode';
 
 function readNavLayoutMode(): NavLayoutMode {
   if (typeof window === 'undefined') return 'flat';
@@ -237,8 +237,8 @@ export default function AppAuthenticatedShell(props: AppAuthenticatedShellProps)
       <div className="app-shell">
         <header className="topbar">
           <div className="brand">
-            <img src="/nodewarden-logo.svg" alt="NodeWarden logo" className="brand-logo" />
-            <span className="brand-wordmark" role="img" aria-label="NodeWarden" />
+            <img src="/nodewarden-logo.svg" alt="Vault logo" className="brand-logo" />
+            <span className="brand-wordmark" role="img" aria-label="Vault" />
             <span className="mobile-page-title">{props.currentPageTitle}</span>
           </div>
           <div className="topbar-actions">
