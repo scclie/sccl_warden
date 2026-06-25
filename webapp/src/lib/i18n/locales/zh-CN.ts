@@ -639,7 +639,7 @@ const zhCN: Record<string, string> = {
   "txt_no_verification_codes": "没有验证码",
   "txt_no_name": "（无名称）",
   "txt_no_sends": "没有 Send",
-  "txt_nodewarden_send": "NodeWarden Send",
+  "txt_nodewarden_send": "Send",
   "txt_not_trusted": "未信任",
   "txt_note": "笔记",
   "txt_notes": "备注",

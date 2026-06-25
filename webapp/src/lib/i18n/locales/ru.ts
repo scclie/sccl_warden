@@ -639,7 +639,7 @@ const ru: Record<string, string> = {
   "txt_no_verification_codes": "Нет кодов подтверждения",
   "txt_no_name": "(Без имени)",
   "txt_no_sends": "Нет отправок",
-  "txt_nodewarden_send": "NodeWarden Отправить",
+  "txt_nodewarden_send": "Отправить",
   "txt_not_trusted": "Не доверяю",
   "txt_note": "Примечание",
   "txt_notes": "Примечания",

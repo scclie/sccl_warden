@@ -639,7 +639,7 @@ const zhTW: Record<string, string> = {
   "txt_no_verification_codes": "沒有驗證碼",
   "txt_no_name": "（無名稱）",
   "txt_no_sends": "沒有 Send",
-  "txt_nodewarden_send": "NodeWarden Send",
+  "txt_nodewarden_send": "Send",
   "txt_not_trusted": "未信任",
   "txt_note": "筆記",
   "txt_notes": "備註",

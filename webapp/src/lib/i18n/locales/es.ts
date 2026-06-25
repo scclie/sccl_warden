@@ -639,7 +639,7 @@ const es: Record<string, string> = {
   "txt_no_verification_codes": "Sin códigos de verificación",
   "txt_no_name": "(Sin nombre)",
   "txt_no_sends": "No hay envíos",
-  "txt_nodewarden_send": "Envío NodeWarden",
+  "txt_nodewarden_send": "Envío",
   "txt_not_trusted": "No confiable",
   "txt_note": "Nota",
   "txt_notes": "Notas",
