@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { Clipboard, Download, Eye, Lock } from 'lucide-preact';
 import { accessPublicSend, accessPublicSendFile, decryptPublicSend, decryptPublicSendFileBytes } from '@/lib/api/send';
 import { copyTextToClipboard } from '@/lib/clipboard';
-import { toBufferSource } from '@/lib/crypto';
+import { bytesToBase64, toBufferSource } from '@/lib/crypto';
 import { downloadBytesAsFile, readResponseBytesWithProgress } from '@/lib/download';
 import NotFoundPage from '@/components/NotFoundPage';
 import StandalonePageFrame from '@/components/StandalonePageFrame';
@@ -121,7 +121,6 @@ export default function PublicSendPage(props: PublicSendPageProps) {
   const [busy, setBusy] = useState(false);
   const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [previewLoading, setPreviewLoading] = useState(false);
   const loadRequestRef = useRef(0);
   const loadAbortRef = useRef<AbortController | null>(null);
 
@@ -243,64 +242,47 @@ export default function PublicSendPage(props: PublicSendPageProps) {
     };
   }, [props.accessId, props.keyPart]);
 
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-  }, [previewUrl]);
-
-  const sendId = sendData?.id;
-  const fileId = sendData?.file?.id;
-  const fileName = (sendData?.decFileName || sendData?.file?.fileName || '');
-  const isFileSend = sendData?.type === 1;
+  const previewAbortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    previewAbortRef.current?.abort();
     setPreviewUrl(null);
-    setPreviewLoading(false);
 
-    if (!sendId || !fileId || !isFileSend) return;
-    if (!isImageFile(fileName)) return;
+    if (!sendData?.id || !sendData?.file?.id || sendData.type !== 1) return;
+    const fname = (sendData.decFileName || sendData.file?.fileName || '');
+    if (!isImageFile(fname)) return;
 
-    let cancelled = false;
     const controller = new AbortController();
+    previewAbortRef.current = controller;
 
-    async function loadPreview() {
-      setPreviewLoading(true);
+    void (async () => {
       try {
-        const url = await accessPublicSendFile(sendId, fileId, props.keyPart, password || undefined);
-        if (cancelled) return;
+        const url = await accessPublicSendFile(sendData.id, sendData.file.id, props.keyPart, password || undefined);
+        if (controller.signal.aborted) return;
         const resp = await fetch(url, { signal: controller.signal });
-        if (!resp.ok || cancelled) return;
+        if (!resp.ok || controller.signal.aborted) return;
         const encryptedBytes = await resp.arrayBuffer();
-        if (cancelled) return;
-        let blob: Blob;
-        const mimeType = getImageMimeType(fileName);
+        if (controller.signal.aborted) return;
+        const mimeType = getImageMimeType(fname);
+        let rawBytes: Uint8Array;
         if (props.keyPart) {
           try {
-            const decryptedBytes = await decryptPublicSendFileBytes(encryptedBytes, props.keyPart);
-            blob = new Blob([toBufferSource(decryptedBytes)], { type: mimeType });
+            rawBytes = await decryptPublicSendFileBytes(encryptedBytes, props.keyPart);
           } catch {
-            blob = new Blob([toBufferSource(encryptedBytes)], { type: mimeType });
+            rawBytes = new Uint8Array(encryptedBytes);
           }
         } else {
-          blob = new Blob([toBufferSource(encryptedBytes)], { type: mimeType });
+          rawBytes = new Uint8Array(encryptedBytes);
         }
-        if (!cancelled) {
-          setPreviewUrl(URL.createObjectURL(blob));
+        if (!controller.signal.aborted) {
+          const b64 = bytesToBase64(rawBytes);
+          setPreviewUrl(`data:${mimeType};base64,${b64}`);
         }
-      } catch {
-        // Preview failed silently, fall back to download-only
-      } finally {
-        if (!cancelled) setPreviewLoading(false);
+      } catch (e) {
+        console.error('Image preview failed:', e);
       }
-    }
-
-    void loadPreview();
-    return () => {
-      cancelled = true;
-      controller.abort();
-    };
-  }, [sendId, fileId, fileName, isFileSend, props.keyPart, password]);
+    })();
+  }, [sendData, props.keyPart, password]);
 
   if (!loading && notFound) {
     return <NotFoundPage title={t('txt_page_not_found')} message={t('txt_send_unavailable')} />;
@@ -363,17 +345,17 @@ export default function PublicSendPage(props: PublicSendPageProps) {
                   <span>{t('txt_file')}</span>
                   <strong>{sendData.decFileName || sendData.file?.fileName || sendData.file?.sizeName || t('txt_encrypted_file')}</strong>
                 </div>
-                {previewLoading && (
-                  <div className="public-send-preview-loading">{t('txt_loading')}</div>
-                )}
-                {previewUrl && (
+                {previewUrl ? (
                   <div className="public-send-image-preview">
-                    <img src={previewUrl} alt={fileName || 'Image'} />
+                    <img src={previewUrl} alt={(sendData.decFileName || sendData.file?.fileName || 'Image')} />
                   </div>
-                )}
+                ) : isImageFile(sendData.decFileName || sendData.file?.fileName || '') ? (
+                  <div className="public-send-preview-loading">{t('txt_loading')}</div>
+                ) : (
                 <button type="button" className="btn btn-primary full" disabled={busy} onClick={() => void downloadFile()}>
                   <Download size={14} className="btn-icon" /> {downloadPercent == null ? (busy ? t('txt_downloading') : t('txt_download')) : t('txt_downloading_percent', { percent: downloadPercent })}
                 </button>
+                )}
               </div>
             )}
             {!!sendData.expirationDate && <p className="muted">{t('txt_expires_at_value', { value: sendData.expirationDate })}</p>}
