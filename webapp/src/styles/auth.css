@@ -28,6 +28,18 @@
   @apply h-8 shrink-0 px-3 text-sm;
 }
 
+.public-send-image-preview {
+  @apply my-3 flex justify-center overflow-hidden rounded;
+}
+
+.public-send-image-preview img {
+  @apply max-h-80 max-w-full rounded object-contain;
+}
+
+.public-send-preview-loading {
+  @apply my-3 text-center text-sm text-muted;
+}
+
 .not-found-page {
   @apply relative grid min-h-full place-items-center overflow-hidden p-6 text-center;
   background:

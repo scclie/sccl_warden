@@ -30,6 +30,30 @@ interface PublicSendData {
   file?: PublicSendFileData | null;
 }
 
+const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'avif'];
+
+function isImageFile(fileName: string): boolean {
+  const dot = fileName.lastIndexOf('.');
+  if (dot === -1) return false;
+  const ext = fileName.slice(dot + 1).toLowerCase();
+  return IMAGE_EXTENSIONS.includes(ext);
+}
+
+function getImageMimeType(fileName: string): string {
+  const ext = fileName.split('.').pop()?.toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'png': 'image/png',
+    'gif': 'image/gif',
+    'webp': 'image/webp',
+    'bmp': 'image/bmp',
+    'svg': 'image/svg+xml',
+    'avif': 'image/avif',
+  };
+  return mimeTypes[ext || ''] || 'image/jpeg';
+}
+
 function decodeBase64Url(value: string): Uint8Array | null {
   try {
     const raw = value.replace(/-/g, '+').replace(/_/g, '/');
@@ -96,6 +120,8 @@ export default function PublicSendPage(props: PublicSendPageProps) {
   const [sendData, setSendData] = useState<PublicSendData | null>(initialDemoSend);
   const [busy, setBusy] = useState(false);
   const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const loadRequestRef = useRef(0);
   const loadAbortRef = useRef<AbortController | null>(null);
 
@@ -217,6 +243,65 @@ export default function PublicSendPage(props: PublicSendPageProps) {
     };
   }, [props.accessId, props.keyPart]);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const sendId = sendData?.id;
+  const fileId = sendData?.file?.id;
+  const fileName = (sendData?.decFileName || sendData?.file?.fileName || '');
+  const isFileSend = sendData?.type === 1;
+
+  useEffect(() => {
+    setPreviewUrl(null);
+    setPreviewLoading(false);
+
+    if (!sendId || !fileId || !isFileSend) return;
+    if (!isImageFile(fileName)) return;
+
+    let cancelled = false;
+    const controller = new AbortController();
+
+    async function loadPreview() {
+      setPreviewLoading(true);
+      try {
+        const url = await accessPublicSendFile(sendId, fileId, props.keyPart, password || undefined);
+        if (cancelled) return;
+        const resp = await fetch(url, { signal: controller.signal });
+        if (!resp.ok || cancelled) return;
+        const encryptedBytes = await resp.arrayBuffer();
+        if (cancelled) return;
+        let blob: Blob;
+        const mimeType = getImageMimeType(fileName);
+        if (props.keyPart) {
+          try {
+            const decryptedBytes = await decryptPublicSendFileBytes(encryptedBytes, props.keyPart);
+            blob = new Blob([toBufferSource(decryptedBytes)], { type: mimeType });
+          } catch {
+            blob = new Blob([toBufferSource(encryptedBytes)], { type: mimeType });
+          }
+        } else {
+          blob = new Blob([toBufferSource(encryptedBytes)], { type: mimeType });
+        }
+        if (!cancelled) {
+          setPreviewUrl(URL.createObjectURL(blob));
+        }
+      } catch {
+        // Preview failed silently, fall back to download-only
+      } finally {
+        if (!cancelled) setPreviewLoading(false);
+      }
+    }
+
+    void loadPreview();
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [sendId, fileId, fileName, isFileSend, props.keyPart, password]);
+
   if (!loading && notFound) {
     return <NotFoundPage title={t('txt_page_not_found')} message={t('txt_send_unavailable')} />;
   }
@@ -278,6 +363,14 @@ export default function PublicSendPage(props: PublicSendPageProps) {
                   <span>{t('txt_file')}</span>
                   <strong>{sendData.decFileName || sendData.file?.fileName || sendData.file?.sizeName || t('txt_encrypted_file')}</strong>
                 </div>
+                {previewLoading && (
+                  <div className="public-send-preview-loading">{t('txt_loading')}</div>
+                )}
+                {previewUrl && (
+                  <div className="public-send-image-preview">
+                    <img src={previewUrl} alt={fileName || 'Image'} />
+                  </div>
+                )}
                 <button type="button" className="btn btn-primary full" disabled={busy} onClick={() => void downloadFile()}>
                   <Download size={14} className="btn-icon" /> {downloadPercent == null ? (busy ? t('txt_downloading') : t('txt_download')) : t('txt_downloading_percent', { percent: downloadPercent })}
                 </button>
