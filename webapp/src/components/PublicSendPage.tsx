@@ -18,6 +18,7 @@ interface PublicSendFileData {
   id: string;
   fileName?: string | null;
   sizeName?: string | null;
+  decViewSeconds?: string | null;
 }
 
 interface PublicSendData {
@@ -26,6 +27,7 @@ interface PublicSendData {
   decName?: string | null;
   decText?: string | null;
   decFileName?: string | null;
+  decViewSeconds?: string | null;
   expirationDate?: string | null;
   file?: PublicSendFileData | null;
 }
@@ -88,6 +90,7 @@ function parsePublicSendData(value: unknown): PublicSendData | null {
   const rawType = Number(source.type);
   if (!id || (rawType !== 0 && rawType !== 1)) return null;
 
+  const decViewSeconds = optionalString(source.decViewSeconds);
   const fileSource = asRecord(source.file);
   const fileId = optionalString(fileSource?.id);
   const file = fileSource && fileId
@@ -95,6 +98,7 @@ function parsePublicSendData(value: unknown): PublicSendData | null {
         id: fileId,
         fileName: optionalString(fileSource.fileName),
         sizeName: optionalString(fileSource.sizeName),
+        decViewSeconds,
       }
     : null;
   if (rawType === 1 && !file) return null;
@@ -105,6 +109,7 @@ function parsePublicSendData(value: unknown): PublicSendData | null {
     decName: optionalString(source.decName),
     decText: optionalString(source.decText),
     decFileName: optionalString(source.decFileName),
+    decViewSeconds,
     expirationDate: optionalString(source.expirationDate),
     file,
   };
@@ -121,7 +126,9 @@ export default function PublicSendPage(props: PublicSendPageProps) {
   const [busy, setBusy] = useState(false);
   const [downloadPercent, setDownloadPercent] = useState<number | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previewExpired, setPreviewExpired] = useState(false);
   const loadRequestRef = useRef(0);
+  const previewTimerRef = useRef<number | null>(null);
   const loadAbortRef = useRef<AbortController | null>(null);
 
   async function loadSend(pass?: string): Promise<void> {
@@ -247,6 +254,11 @@ export default function PublicSendPage(props: PublicSendPageProps) {
   useEffect(() => {
     previewAbortRef.current?.abort();
     setPreviewUrl(null);
+    setPreviewExpired(false);
+    if (previewTimerRef.current !== null) {
+      clearTimeout(previewTimerRef.current);
+      previewTimerRef.current = null;
+    }
 
     if (!sendData?.id || !sendData?.file?.id || sendData.type !== 1) return;
     const fname = (sendData.decFileName || sendData.file?.fileName || '');
@@ -283,6 +295,22 @@ export default function PublicSendPage(props: PublicSendPageProps) {
       }
     })();
   }, [sendData, props.keyPart, password]);
+
+  useEffect(() => {
+    if (!previewUrl || !sendData?.decViewSeconds) return;
+    const seconds = parseInt(sendData.decViewSeconds, 10);
+    if (!seconds || seconds <= 0) return;
+    previewTimerRef.current = window.setTimeout(() => {
+      setPreviewUrl(null);
+      setPreviewExpired(true);
+    }, seconds * 1000);
+    return () => {
+      if (previewTimerRef.current !== null) {
+        clearTimeout(previewTimerRef.current);
+        previewTimerRef.current = null;
+      }
+    };
+  }, [previewUrl, sendData?.decViewSeconds]);
 
   if (!loading && notFound) {
     return <NotFoundPage title={t('txt_page_not_found')} message={t('txt_send_unavailable')} />;
@@ -345,7 +373,9 @@ export default function PublicSendPage(props: PublicSendPageProps) {
                   <span>{t('txt_file')}</span>
                   <strong>{sendData.decFileName || sendData.file?.fileName || sendData.file?.sizeName || t('txt_encrypted_file')}</strong>
                 </div>
-                {previewUrl ? (
+                {previewExpired ? (
+                  <div className="public-send-expired">{t('txt_send_expired')}</div>
+                ) : previewUrl ? (
                   <div className="public-send-image-preview">
                     <img src={previewUrl} alt={(sendData.decFileName || sendData.file?.fileName || 'Image')} />
                   </div>

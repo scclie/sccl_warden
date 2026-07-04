@@ -811,6 +811,8 @@ const zhCN: Record<string, string> = {
   "txt_send_file": "Send 文件",
   "txt_send_unavailable": "Send 不可用。",
   "txt_send_updated": "Send 已更新",
+  "txt_auto_hide_seconds": "自动隐藏秒数",
+  "txt_send_expired": "查看已过期",
   "txt_sign_out": "退出登录",
   "txt_ssh_key": "SSH 密钥",
   "txt_ssn": "社保号",

@@ -210,6 +210,7 @@ export interface Send {
     fileName?: string;
     size?: string | number;
     sizeName?: string;
+    viewSeconds?: number | null;
   } | null;
 }
 
@@ -220,6 +221,7 @@ export interface SendDraft {
   notes: string;
   text: string;
   file: File | null;
+  viewSeconds: string;
   deletionDays: string;
   expirationDays: string;
   maxAccessCount: string;

@@ -135,6 +135,8 @@ export async function createSend(
   if (!draft.file) throw new Error('File is required');
   const fileNameCipher = await encryptTextValue(draft.file.name, sendKey.enc, sendKey.mac);
   if (!fileNameCipher) throw new Error('Invalid file name');
+  const viewSecondsRaw = String(draft.viewSeconds || '').trim();
+  const viewSecondsCipher = viewSecondsRaw ? await encryptTextValue(viewSecondsRaw, sendKey.enc, sendKey.mac) : null;
   const plainFileBytes = new Uint8Array(await draft.file.arrayBuffer());
   const encryptedFileBytes = await encryptBwFileData(plainFileBytes, sendKey.enc, sendKey.mac);
 
@@ -148,6 +150,7 @@ export async function createSend(
       key: sendKeyForUser,
       file: {
         fileName: fileNameCipher,
+        viewSeconds: viewSecondsCipher,
       },
       fileLength: encryptedFileBytes.byteLength,
       maxAccessCount,
@@ -324,6 +327,13 @@ export async function decryptPublicSend(accessData: unknown, urlSafeKey: string)
       out.decFileName = await decryptStr(String(file.fileName), sendKey.enc, sendKey.mac);
     } catch {
       out.decFileName = String(file.fileName);
+    }
+  }
+  if (file?.viewSeconds) {
+    try {
+      out.decViewSeconds = await decryptStr(String(file.viewSeconds), sendKey.enc, sendKey.mac);
+    } catch {
+      out.decViewSeconds = String(file.viewSeconds);
     }
   }
   return out;

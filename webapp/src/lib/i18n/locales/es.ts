@@ -811,6 +811,8 @@ const es: Record<string, string> = {
   "txt_send_file": "envío-archivo",
   "txt_send_unavailable": "Envío no disponible.",
   "txt_send_updated": "Envío actualizado",
+  "txt_auto_hide_seconds": "Ocultar automáticamente después de segundos",
+  "txt_send_expired": "Vista expirada",
   "txt_sign_out": "Cerrar sesión",
   "txt_ssh_key": "Clave SSH",
   "txt_ssn": "NSS",

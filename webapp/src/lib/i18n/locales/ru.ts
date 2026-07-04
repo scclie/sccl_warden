@@ -811,6 +811,8 @@ const ru: Record<string, string> = {
   "txt_send_file": "отправить файл",
   "txt_send_unavailable": "Send недоступна.",
   "txt_send_updated": "Отправить обновленное",
+  "txt_auto_hide_seconds": "Автоскрытие через секунды",
+  "txt_send_expired": "Просмотр истек",
   "txt_sign_out": "Выйти",
   "txt_ssh_key": "SSH-ключ",
   "txt_ssn": "ССН",

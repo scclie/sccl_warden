@@ -811,6 +811,8 @@ const zhTW: Record<string, string> = {
   "txt_send_file": "Send 文件",
   "txt_send_unavailable": "Send 不可用。",
   "txt_send_updated": "Send 已更新",
+  "txt_auto_hide_seconds": "自動隱藏秒數",
+  "txt_send_expired": "檢視已過期",
   "txt_sign_out": "退出登錄",
   "txt_ssh_key": "SSH 密鑰",
   "txt_ssn": "社保號",

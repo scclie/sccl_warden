@@ -39,6 +39,7 @@ function buildDefaultDraft(): SendDraft {
     notes: '',
     text: '',
     file: null,
+    viewSeconds: '',
     deletionDays: '7',
     expirationDays: '0',
     maxAccessCount: '',
@@ -55,6 +56,7 @@ function draftFromSend(send: Send): SendDraft {
     notes: send.decNotes || '',
     text: send.decText || '',
     file: null,
+    viewSeconds: '',
     deletionDays: daysFromNow(send.deletionDate, 7),
     expirationDays: daysFromNow(send.expirationDate, 0),
     maxAccessCount: send.maxAccessCount !== null && send.maxAccessCount !== undefined ? String(send.maxAccessCount) : '',
@@ -469,6 +471,12 @@ export default function SendsPage(props: SendsPageProps) {
                 <span>{t('txt_max_access_count')}</span>
                 <input className="input" value={draft.maxAccessCount} onInput={(e) => setDraft({ ...draft, maxAccessCount: (e.currentTarget as HTMLInputElement).value })} />
               </label>
+              {draft.type === 'file' && (
+                <label className="field">
+                  <span>{t('txt_auto_hide_seconds')}</span>
+                  <input className="input" type="number" min="0" value={draft.viewSeconds} onInput={(e) => setDraft({ ...draft, viewSeconds: (e.currentTarget as HTMLInputElement).value })} />
+                </label>
+              )}
               <label className="field">
                 <span>{t('txt_password')}</span>
                 <div className="password-wrap">

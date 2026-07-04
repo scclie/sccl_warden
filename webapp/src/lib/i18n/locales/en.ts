@@ -810,6 +810,8 @@ const en: Record<string, string> = {
   "txt_send_details": "Send Details",
   "txt_send_file": "send-file",
   "txt_send_unavailable": "Send unavailable.",
+  "txt_auto_hide_seconds": "Auto-hide after seconds",
+  "txt_send_expired": "View expired",
   "txt_send_updated": "Send updated",
   "txt_sign_out": "Sign Out",
   "txt_ssh_key": "SSH Key",
